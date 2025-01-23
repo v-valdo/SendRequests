@@ -19,7 +19,9 @@ steps:
       installationPath: $(Agent.ToolsDirectory)/dotnet
 
   - task: NuGetToolInstaller@1
-    displayName: "Install nugets"
+    displayName: "Install Nugets"
+    inputs:
+      versionSpec: "5.8.0"
 
   - task: DotNetCoreCLI@2
     displayName: "Restore dependencies"
@@ -29,7 +31,7 @@ steps:
       feedsToUse: "select"
 
   - task: DotNetCoreCLI@2
-    displayName: "build project"
+    displayName: "Build project"
     inputs:
       command: "build"
       projects: "SendRequests.console/HelloWorldDevOps.csproj"
@@ -41,7 +43,7 @@ steps:
       projects: "SendRequests.Tests/SendRequests.Tests.csproj"
       arguments: '--logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory $(Agent.TempDirectory)'
 
-  - script: ls -R $(Agent.TempDirectory)
+  - script: ls -R "$(Agent.TempDirectory)"
     displayName: "List Temp Directory"
     condition: always()
 
