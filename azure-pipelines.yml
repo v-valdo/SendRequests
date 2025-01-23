@@ -37,20 +37,26 @@ steps:
       projects: "SendRequests.console/HelloWorldDevOps.csproj"
 
   - script: |
-      dotnet test SendRequests.Tests/SendRequests.Tests.csproj --logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory "$(Agent.TempDirectory)"
+      dotnet test SendRequests.Tests/SendRequests.Tests.csproj --logger "trx;LogFileName=$(Build.ArtifactStagingDirectory)/TestResults.xml" --results-directory "$(Build.ArtifactStagingDirectory)"
     displayName: "Run tests"
 
-  - script: printenv
-    displayName: "Print Environment Variables"
+  - script: |
+      if [ -f "$(Build.ArtifactStagingDirectory)/TestResults.xml" ]; then
+        echo "Test results file found."
+      else
+        echo "Test results file NOT found."
+      fi
+    displayName: "Check Test Results File"
     condition: always()
 
-  - script: ls -R "$(Agent.TempDirectory)"
-    displayName: "List Temp Directory"
+  - script: ls -R "$(Build.ArtifactStagingDirectory)"
+    displayName: "List Artifact Staging Directory"
     condition: always()
 
   - task: PublishTestResults@2
-    condition: succeededOrFailed()
+    condition: always()
     displayName: "Publish test results"
     inputs:
-      testResultsFiles: "$(Agent.TempDirectory)/TestResults.xml"
+      testResultsFiles: "$(Build.ArtifactStagingDirectory)/TestResults.xml"
       testRunTitle: "xUnit Tests"
+      publishRunAttachments: true
