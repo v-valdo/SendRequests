@@ -1,33 +1,47 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
-
 trigger:
-- main
-
+ branches:
+  include:
+    - '*'
 pool:
-  vmImage: 'windows-latest'
-
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+ name: Selfhosted
+ vmImage: 'ubuntu-latest'
+ 
+ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET SDK 9.x'
+  inputs:
+    packageType: 'sdk'
+    version: '9.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - task: NuGetToolInstaller@1
+  displayName: 'Install nugets'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
+  displayName: 'Restore dependencies'
   inputs:
-    restoreSolution: '$(solution)'
+    command: 'restore'
+    projects: 'HelloWorldDevOps.sln'
+    feedsToUse: 'select'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
+  displayName: 'build project'
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+   command: 'build'
+   projects: 'SendRequests.console/HelloWorldDevOps.csproj'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: 'Run test'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'
+    projects: 'SendRequests.Tests/SendRequests.Tests.csproj'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  displayName: 'Publish test results'
+  inputs:
+    testResultsFiles: '**/TestResults/*.xml'
+    testRunTitle: 'xUnit Tests'
