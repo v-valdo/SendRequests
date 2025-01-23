@@ -39,11 +39,14 @@ steps:
     inputs:
       command: "test"
       projects: "SendRequests.Tests/SendRequests.Tests.csproj"
-      arguments: '--logger "trx;LogFileName=TestResults.xml" --results-directory $(Agent.TempDirectory)'
+      arguments: '--logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory $(Agent.TempDirectory)'
+
+  - script: ls -R $(Agent.TempDirectory)
+    displayName: "List Temp Directory"
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     displayName: "Publish test results"
     inputs:
-      testResultsFiles: "$(Agent.TempDirectory)/*.xml"
+      testResultsFiles: "$(Agent.TempDirectory)/TestResults.xml"
       testRunTitle: "xUnit Tests"
