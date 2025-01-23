@@ -37,11 +37,11 @@ steps:
       projects: "SendRequests.console/HelloWorldDevOps.csproj"
 
   - task: DotNetCoreCLI@2
-    displayName: "Run test"
+    displayName: "Run tests"
     inputs:
       command: "test"
-      projects: "HelloWorldDevOps.sln"
-      arguments: '--logger "trx;logfilename=mytests.trx" --results-directory .\SendRequests.Tests\test-results'
+      projects: "SendRequests.Tests/SendRequests.Tests.csproj"
+      arguments: '--logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory "$(Agent.TempDirectory)"'
 
   - script: ls -R "$(Agent.TempDirectory)"
     displayName: "List Temp Directory"
