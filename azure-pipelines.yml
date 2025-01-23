@@ -40,8 +40,8 @@ steps:
     displayName: "Run test"
     inputs:
       command: "test"
-      projects: "SendRequests.Tests/SendRequests.Tests.csproj"
-      arguments: '--logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory $(Agent.TempDirectory)'
+      projects: "HelloWorldDevOps.sln"
+      arguments: '--logger "trx;logfilename=mytests.trx" --results-directory .\SendRequests.Tests\test-results'
 
   - script: ls -R "$(Agent.TempDirectory)"
     displayName: "List Temp Directory"
