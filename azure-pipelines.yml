@@ -38,11 +38,11 @@ steps:
     inputs:
       command: "test"
       projects: "SendRequests.Tests/SendRequests.Tests.csproj"
-      arguments: '--logger "trx;LogFileName=TestResults.xml"'
+      arguments: '--logger "trx;LogFileName=$(Build.SourcesDirectory)/TestResults/TestResults.xml" --results-directory $(Build.SourcesDirectory)/TestResults'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     displayName: "Publish test results"
     inputs:
-      testResultsFiles: "**/TestResults/*.xml"
+      testResultsFiles: "$(Build.SourcesDirectory)/TestResults/*.xml"
       testRunTitle: "xUnit Tests"
