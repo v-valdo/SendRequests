@@ -1,47 +1,48 @@
 trigger:
- branches:
-  include:
-    - '*'
+  branches:
+    include:
+      - "*"
 pool:
- name: Selfhosted
- vmImage: 'ubuntu-latest'
- 
- variables:
-  buildConfiguration: 'Release'
+  name: Selfhosted
+  vmImage: "ubuntu-latest"
+
+  variables:
+    buildConfiguration: "Release"
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET SDK 9.x'
-  inputs:
-    packageType: 'sdk'
-    version: '9.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+  - task: UseDotNet@2
+    displayName: "Use .NET SDK 9.x"
+    inputs:
+      packageType: "sdk"
+      version: "9.x"
+      installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- task: NuGetToolInstaller@1
-  displayName: 'Install nugets'
+  - task: NuGetToolInstaller@1
+    displayName: "Install nugets"
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore dependencies'
-  inputs:
-    command: 'restore'
-    projects: 'HelloWorldDevOps.sln'
-    feedsToUse: 'select'
+  - task: DotNetCoreCLI@2
+    displayName: "Restore dependencies"
+    inputs:
+      command: "restore"
+      projects: "HelloWorldDevOps.sln"
+      feedsToUse: "select"
 
-- task: DotNetCoreCLI@2
-  displayName: 'build project'
-  inputs:
-   command: 'build'
-   projects: 'SendRequests.console/HelloWorldDevOps.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: "build project"
+    inputs:
+      command: "build"
+      projects: "SendRequests.console/HelloWorldDevOps.csproj"
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run test'
-  inputs:
-    command: 'test'
-    projects: 'SendRequests.Tests/SendRequests.Tests.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: "Run test"
+    inputs:
+      command: "test"
+      projects: "SendRequests.Tests/SendRequests.Tests.csproj"
+      arguments: '--logger "trx;LogFileName=TestResults.xml"'
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  displayName: 'Publish test results'
-  inputs:
-    testResultsFiles: '**/TestResults/*.xml'
-    testRunTitle: 'xUnit Tests'
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    displayName: "Publish test results"
+    inputs:
+      testResultsFiles: "**/TestResults/*.xml"
+      testRunTitle: "xUnit Tests"
