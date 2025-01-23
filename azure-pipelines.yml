@@ -12,10 +12,10 @@ variables:
 
 steps:
   - task: UseDotNet@2
-    displayName: "Use .NET SDK 9.x"
+    displayName: "Use .NET SDK 8.x"
     inputs:
       packageType: "sdk"
-      version: "9.x"
+      version: "8.x"
       installationPath: $(Agent.ToolsDirectory)/dotnet
 
   - task: NuGetToolInstaller@1
