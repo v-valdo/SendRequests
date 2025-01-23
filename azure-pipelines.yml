@@ -43,6 +43,7 @@ steps:
 
   - script: ls -R $(Agent.TempDirectory)
     displayName: "List Temp Directory"
+    condition: always()
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
