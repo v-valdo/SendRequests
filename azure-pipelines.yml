@@ -37,13 +37,13 @@ steps:
       projects: "SendRequests.console/HelloWorldDevOps.csproj"
 
   - script: |
-      dotnet test SendRequests.Tests/SendRequests.Tests.csproj --logger "trx;LogFileName=$(Build.ArtifactStagingDirectory)/TestResults.xml" --results-directory "$(Build.ArtifactStagingDirectory)"
+      dotnet test SendRequests.Tests/SendRequests.Tests.csproj --logger "trx;LogFileName=$(Build.ArtifactStagingDirectory)/TestResults.trx" --results-directory "$(Build.ArtifactStagingDirectory)"
     displayName: "Run tests"
 
   - script: |
-      if [ -f "$(Build.ArtifactStagingDirectory)/TestResults.xml" ]; then
+      if [ -f "$(Build.ArtifactStagingDirectory)/TestResults.trx" ]; then
         echo "Test results file found."
-        chmod 644 $(Build.ArtifactStagingDirectory)/TestResults.xml
+        chmod 644 $(Build.ArtifactStagingDirectory)/TestResults.trx
       else
         echo "Test results file NOT found."
       fi
@@ -58,6 +58,7 @@ steps:
     condition: always()
     displayName: "Publish test results"
     inputs:
-      testResultsFiles: "$(Build.ArtifactStagingDirectory)/TestResults.xml"
+      testResultsFormat: 'VSTest'
+      testResultsFiles: "$(Build.ArtifactStagingDirectory)/TestResults.trx"
       testRunTitle: "xUnit Tests"
       publishRunAttachments: true
