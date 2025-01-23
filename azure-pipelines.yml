@@ -36,12 +36,13 @@ steps:
       command: "build"
       projects: "SendRequests.console/HelloWorldDevOps.csproj"
 
-  - task: DotNetCoreCLI@2
+  - script: |
+      dotnet test SendRequests.Tests/SendRequests.Tests.csproj --logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory "$(Agent.TempDirectory)"
     displayName: "Run tests"
-    inputs:
-      command: "test"
-      projects: "SendRequests.Tests/SendRequests.Tests.csproj"
-      arguments: '--logger "trx;LogFileName=$(Agent.TempDirectory)/TestResults.xml" --results-directory "$(Agent.TempDirectory)"'
+
+  - script: printenv
+    displayName: "Print Environment Variables"
+    condition: always()
 
   - script: ls -R "$(Agent.TempDirectory)"
     displayName: "List Temp Directory"
