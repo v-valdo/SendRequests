@@ -2,12 +2,13 @@ trigger:
   branches:
     include:
       - "*"
+
 pool:
   name: Selfhosted
   vmImage: "ubuntu-latest"
 
-  variables:
-    buildConfiguration: "Release"
+variables:
+  buildConfiguration: "Release"
 
 steps:
   - task: UseDotNet@2
@@ -38,13 +39,11 @@ steps:
     inputs:
       command: "test"
       projects: "SendRequests.Tests/SendRequests.Tests.csproj"
-      arguments: '--logger "trx;LogFileName=TestResults.xml" --results-directory $(Agent.TempDirectory)/TestResults'
-
+      arguments: '--logger "trx;LogFileName=TestResults.xml" --results-directory $(Agent.TempDirectory)'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     displayName: "Publish test results"
     inputs:
-      testResultsFiles: "$(Agent.TempDirectory)/TestResults/*.xml"
+      testResultsFiles: "$(Agent.TempDirectory)/*.xml"
       testRunTitle: "xUnit Tests"
-
