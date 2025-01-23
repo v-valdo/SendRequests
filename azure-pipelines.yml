@@ -43,6 +43,7 @@ steps:
   - script: |
       if [ -f "$(Build.ArtifactStagingDirectory)/TestResults.xml" ]; then
         echo "Test results file found."
+        chmod 644 $(Build.ArtifactStagingDirectory)/TestResults.xml
       else
         echo "Test results file NOT found."
       fi
