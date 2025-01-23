@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-System.Console.WriteLine("sad manual requests");
 
 HttpClient client = new();
 
